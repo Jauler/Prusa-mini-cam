@@ -1,0 +1,93 @@
+<<: !include secrets.yaml
+
+esphome:
+  name: prusa_mini_cam
+
+esp32:
+  board: esp32cam
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: ${prusa_mini_cam_passwd}
+
+ota:
+  password: ${prusa_mini_cam_passwd}
+
+wifi:
+  ssid: ${wifi_ssid}
+  password: ${wifi_passwd}
+  reboot_timeout: 120s
+  power_save_mode: none
+  fast_connect: true
+
+esp32_camera:
+  external_clock:
+    pin: GPIO0
+    frequency: 20MHz
+  i2c_pins:
+    sda: GPIO26
+    scl: GPIO27
+  data_pins: [GPIO5, GPIO18, GPIO19, GPIO21, GPIO36, GPIO39, GPIO34, GPIO35]
+  vsync_pin: GPIO25
+  href_pin: GPIO23
+  pixel_clock_pin: GPIO22
+  power_down_pin: GPIO32
+  name: prusa_mini_cam
+
+esp32_camera_web_server:
+  - port: 8080
+    mode: stream
+
+light:
+  - platform: binary
+    name: "Camera Flash"
+    output: camera_flash 
+  - platform: binary
+    name: "Indicator LED"
+    output: wifi_indicator_led
+
+output:
+  - id: camera_flash
+    platform: gpio
+    pin: GPIO4
+  - id: wifi_indicator_led
+    platform: gpio
+    pin: GPIO33
+    inverted: true
+
+i2c:
+  scan: true
+  id: i2c_bus_a
+  sda: 14
+  scl: 15
+
+sensor:
+  - platform: ms5611
+    i2c_id: i2c_bus_a
+    temperature:
+      name: "Temperature"
+    pressure:
+      name: "Pressure"
+    address: 0x77
+    update_interval: 60s
+  - platform: uptime
+    name: "Prusa Mini Cam Uptime"
+  - platform: wifi_signal
+    name: "Prusa Mini Cam Wifi Strength"
+    update_interval: 60s
+
+interval:
+  - interval: 1s
+    then:
+      if:
+        condition:
+          wifi.connected:
+        then:
+          - output.turn_on: wifi_indicator_led
+        else:
+          - output.turn_off: wifi_indicator_led
