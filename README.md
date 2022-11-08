@@ -3,7 +3,9 @@
 This is a small camera module for Prusa Mini+ 3D printer based on ESP32-CAM module.
 And added temperature and pressure sensor just for fun.
 
-## Quick start
+![Screenshot](img/screenshot.png)
+
+## Usage
 
 ### Step 1
 
@@ -43,4 +45,4 @@ That means, that you should be able to see the camera feed at http://<pursa_mini
 
 If you have Home Assistant configuration - you can now add [ESPHome](https://www.home-assistant.io/integrations/esphome/) integration.
 
-
+# 
