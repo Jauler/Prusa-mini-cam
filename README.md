@@ -45,4 +45,3 @@ That means, that you should be able to see the camera feed at http://<pursa_mini
 
 If you have Home Assistant configuration - you can now add [ESPHome](https://www.home-assistant.io/integrations/esphome/) integration.
 
-# 
